@@ -25,7 +25,7 @@ func NewBazelSourceFileTarget(name string, digest []byte, workingDirectory strin
 		filenameSubstring := name[2:]
 		filenamePath := strings.Replace(filenameSubstring, ":", "/", 1)
 		sourceFile := path.Join(workingDirectory, filenamePath)
-		if _, err := os.Stat(sourceFile); !errors.Is(err, os.ErrNotExist) {
+		if stat, err := os.Stat(sourceFile); !errors.Is(err, os.ErrNotExist) && (stat != nil && !stat.IsDir()) {
 			// path/to/whatever does not exist
 			contents, err := os.ReadFile(sourceFile)
 			if err != nil {
