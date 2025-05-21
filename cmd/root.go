@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/ewhauser/bazel-differ/internal"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var WorkspacePath string
@@ -16,6 +17,7 @@ var BazelStartupOptions string
 var BazelCommandOptions string
 var KeepGoing bool
 var Verbose bool
+var ExcludeExternalTargets bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -39,6 +41,8 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&KeepGoing, "keep_going", "k", true,
 		"This flag controls if `bazel query` will be executed with the `--keep_going` flag or not. Disabling this flag allows you to catch configuration issues in your Bazel graph, but may not work for some Bazel setups. Defaults to `true`")
 	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "enables verbose output")
+	rootCmd.PersistentFlags().BoolVarP(&ExcludeExternalTargets, "excludeExternalTargets", "", false,
+		"Exclude external targets from the query. Use this when --noenable_workspace is specified.")
 }
 
 func GetBazelClient() internal.BazelClient {

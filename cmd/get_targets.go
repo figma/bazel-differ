@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+
 	"github.com/ewhauser/bazel-differ/internal"
 	"github.com/ewhauser/bazel-differ/internal/cache"
 	"github.com/spf13/cobra"
@@ -31,7 +32,7 @@ $ bazel-differ get-targets -w path/to/workspace -b $(which bazel) -s START_HASH 
 		cacheManager, err := cache.NewHashCacheManager(!cacheDisabled, cacheDir)
 		ExitIfError(err, "")
 		targetHasher := internal.NewTargetHashingClient(GetBazelClient(), internal.Filesystem,
-			internal.NewRuleProvider())
+			internal.NewRuleProvider(), ExcludeExternalTargets)
 
 		startingHashes := getHashes(startingRevision, gitClient, cacheManager, targetHasher)
 		endingHashes := getHashes(finalRevision, gitClient, cacheManager, targetHasher)

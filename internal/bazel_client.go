@@ -14,7 +14,7 @@ const DEFAULT_QUERY_TEMPLATE = "set({{.Targets}})"
 
 //go:generate mockgen -destination=../mocks/bazel_client_mock.go -package=mocks github.com/ewhauser/bazel-differ/internal BazelClient
 type BazelClient interface {
-	QueryAllTargets() ([]*Target, error)
+	QueryAllTargets(excludeExternalTargets bool) ([]*Target, error)
 	QueryAllSourceFileTargets() (map[string]*BazelSourceFileTarget, error)
 	QueryTarget(queryTemplate string, targets map[string]bool) ([]*Target, error)
 }
@@ -46,8 +46,12 @@ func NewBazelClient(filesystem fs.FS, workingDirectory string, bazelPath string,
 	}
 }
 
-func (b bazelClient) QueryAllTargets() ([]*Target, error) {
-	return b.performBazelQuery("'//external:all-targets' + '//...:all-targets'")
+func (b bazelClient) QueryAllTargets(excludeExternalTargets bool) ([]*Target, error) {
+	if excludeExternalTargets {
+		return b.performBazelQuery("'//...:all-targets'")
+	} else {
+		return b.performBazelQuery("'//external:all-targets' + '//...:all-targets'")
+	}
 }
 
 func (b bazelClient) QueryAllSourceFileTargets() (m map[string]*BazelSourceFileTarget, err error) {

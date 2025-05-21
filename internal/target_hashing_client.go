@@ -20,16 +20,18 @@ type TargetHashingClient interface {
 }
 
 type targetHashingClient struct {
-	bazelClient  BazelClient
-	filesystem   fs.FS
-	ruleProvider RuleProvider
+	bazelClient            BazelClient
+	filesystem             fs.FS
+	ruleProvider           RuleProvider
+	excludeExternalTargets bool
 }
 
-func NewTargetHashingClient(client BazelClient, filesystem fs.FS, ruleProvider RuleProvider) TargetHashingClient {
+func NewTargetHashingClient(client BazelClient, filesystem fs.FS, ruleProvider RuleProvider, excludeExternalTargets bool) TargetHashingClient {
 	return &targetHashingClient{
-		bazelClient:  client,
-		filesystem:   filesystem,
-		ruleProvider: ruleProvider,
+		bazelClient:            client,
+		filesystem:             filesystem,
+		ruleProvider:           ruleProvider,
+		excludeExternalTargets: excludeExternalTargets,
 	}
 }
 
@@ -96,7 +98,7 @@ func createSeedForFilepaths(filesys fs.FS, seedFilepaths []string) ([]byte, erro
 func (t targetHashingClient) hashAllTargets(seedHash []byte,
 	bazelSourcefileTargets map[string]*BazelSourceFileTarget) (
 	map[string]string, error) {
-	allTargets, err := t.bazelClient.QueryAllTargets()
+	allTargets, err := t.bazelClient.QueryAllTargets(t.excludeExternalTargets)
 	if err != nil {
 		return nil, err
 	}

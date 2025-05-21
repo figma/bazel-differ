@@ -3,8 +3,9 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"github.com/ewhauser/bazel-differ/internal"
 	"os"
+
+	"github.com/ewhauser/bazel-differ/internal"
 
 	"github.com/spf13/cobra"
 )
@@ -20,7 +21,7 @@ var generateHashesCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		targetHasher := internal.NewTargetHashingClient(GetBazelClient(), internal.Filesystem,
-			internal.NewRuleProvider())
+			internal.NewRuleProvider(), ExcludeExternalTargets)
 
 		var seedfilePaths = make(map[string]bool)
 		if SeedFilepaths != "" {

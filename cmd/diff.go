@@ -3,9 +3,10 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"os"
+
 	"github.com/ewhauser/bazel-differ/internal"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 // diffCmd represents the diff command
@@ -35,7 +36,7 @@ var diffCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		targetHasher := internal.NewTargetHashingClient(GetBazelClient(), internal.Filesystem,
-			internal.NewRuleProvider())
+			internal.NewRuleProvider(), ExcludeExternalTargets)
 
 		startingHashes, err := internal.ReadHashFile(StartingHashes)
 		ExitIfError(err, "")
