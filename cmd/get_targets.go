@@ -50,12 +50,6 @@ $ bazel-differ get-targets -w path/to/workspace -b $(which bazel) -s START_HASH 
 			}
 			internal.WriteTargetsFile(targetNames, Output)
 		}
-
-		if Output == "" || Verbose {
-			for k := range targetNames {
-				fmt.Println(k)
-			}
-		}
 	},
 }
 

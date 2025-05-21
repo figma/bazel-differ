@@ -31,9 +31,8 @@ var generateHashesCmd = &cobra.Command{
 		hashes, err := targetHasher.HashAllBazelTargetsAndSourcefiles(seedfilePaths)
 		ExitIfError(err, "")
 
-		res, err := internal.WriteHashFile(args[0], hashes)
+		_, err = internal.WriteHashFile(args[0], hashes)
 		ExitIfError(err, "")
-		fmt.Println(res)
 	},
 }
 
